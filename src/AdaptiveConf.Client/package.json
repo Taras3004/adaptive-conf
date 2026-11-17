@@ -1,5 +1,5 @@
 {
-  "name": "adaptive-conf-client",
+  "name": "adaptive-conf.client",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
