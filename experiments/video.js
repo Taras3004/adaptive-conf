@@ -1,5 +1,3 @@
-console.log("Hi!");
-
 document.getElementById("submit-button").addEventListener("click", submit);
 
 document.getElementById("call-button").addEventListener("click", call);
@@ -13,13 +11,26 @@ receiveOfferButton.addEventListener("click", receiveOffer);
 const receiveAnswerButton = document.getElementById("receive-answer-button");
 receiveAnswerButton.addEventListener("click", receiveAnswer);
 
+const statsButton = document.getElementById("stats-button");
+statsButton.addEventListener("click", async () => await getStats());
+
 let myMediaStream;
 
-const pc1Connection = new RTCPeerConnection();
+const config = {
+  iceServers: [{ urls: "stun:stun3.l.google.com:19302" }],
+};
+
+const pc1Connection = new RTCPeerConnection(config);
+
+pc1Connection.addEventListener("connectionstatechange", (x) => {
+  console.log("State: ", pc1Connection.connectionState);
+});
+
+pc1Connection.addEventListener("iceconnectionstatechange", (x) => {
+  console.log("ICE State: ", pc1Connection.iceConnectionState);
+});
 
 async function submit() {
-  console.log("Connection...");
-
   const myVideoElement = document.getElementById("pc-1");
 
   const constraints = { audio: true, video: { width: 1280, height: 720 } };
@@ -73,4 +84,10 @@ async function receiveAnswer() {
   const answer = JSON.parse(answerTextarea.value);
 
   await pc1Connection.setRemoteDescription(answer);
+}
+
+async function getStats() {
+  const result = await pc1Connection.getStats();
+
+  result.forEach((x) => console.log(x));
 }
